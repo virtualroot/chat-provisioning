@@ -1,0 +1,14 @@
+---
+- name: Update apt cache if needed
+  apt: update_cache=yes cache_valid_time=3600
+
+- name: Install needed software and libraries
+  apt: name={{item}} state=present
+  with_items:
+    - python-pip
+    - git
+    - strace
+    - sysstat
+    - tcpdump
+    - tmux
+    - vim-nox

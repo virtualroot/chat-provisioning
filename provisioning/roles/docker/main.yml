@@ -1,0 +1,5 @@
+- name: Apply docker role
+  vars_files:
+    - defaults/main.yml
+  tasks:
+    - include: tasks/main.yml

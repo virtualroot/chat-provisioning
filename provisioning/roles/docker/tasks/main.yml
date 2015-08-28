@@ -1,0 +1,38 @@
+---
+- name: Install apt transport package
+  apt: pkg={{ item }} state=latest
+  with_items:
+    - apt-transport-https
+
+- name: Add Docker repository key
+  apt_key:
+    keyserver: keyserver.ubuntu.com
+    id: "{{ apt_key_sig }}"
+    state: present
+
+- name: Add Docker repository and update apt cache
+  apt_repository:
+    repo: "{{ apt_repository }}"
+    update_cache: yes
+    state: present
+
+- name: Install Docker package
+  apt:
+    name: "{{ docker_pkg_name }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 600
+
+- name: Give user vagrant access to Docker without sudo
+  command: /usr/bin/sudo usermod -aG docker vagrant
+
+- name: Transfer config file
+  template: 
+    src: docker.io.j2
+    dest: /etc/default/docker.io
+
+- name: Install (or update) docker-py
+  pip: name=docker-py==1.2.3
+
+- name: Start Docker
+  service: name=docker state=restarted enabled=yes
